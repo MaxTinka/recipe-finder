@@ -1,126 +1,5 @@
-// Recipe Finder Web App with User Authentication
+// Recipe Finder Web App
 // Uses TheMealDB API (free, no API key required)
-
-// ============================================
-// USER AUTHENTICATION
-// ============================================
-
-let currentUser = null;
-let favorites = {};
-
-// Load users from localStorage
-function loadUsers() {
-    const stored = localStorage.getItem('recipeUsers');
-    if (stored) {
-        return JSON.parse(stored);
-    }
-    return {};
-}
-
-// Save users to localStorage
-function saveUsers(users) {
-    localStorage.setItem('recipeUsers', JSON.stringify(users));
-}
-
-// Load favorites for current user
-function loadUserFavorites() {
-    if (currentUser) {
-        const stored = localStorage.getItem(`recipeFavorites_${currentUser}`);
-        if (stored) {
-            favorites = JSON.parse(stored);
-        } else {
-            favorites = [];
-        }
-    }
-}
-
-// Save favorites for current user
-function saveUserFavorites() {
-    if (currentUser) {
-        localStorage.setItem(`recipeFavorites_${currentUser}`, JSON.stringify(favorites));
-    }
-}
-
-// Sign up new user
-function signup(username, password, confirm) {
-    if (!username || !password) {
-        alert('Please enter username and password');
-        return false;
-    }
-    
-    if (password !== confirm) {
-        alert('Passwords do not match');
-        return false;
-    }
-    
-    if (password.length < 4) {
-        alert('Password must be at least 4 characters');
-        return false;
-    }
-    
-    const users = loadUsers();
-    
-    if (users[username]) {
-        alert('Username already exists. Please choose another.');
-        return false;
-    }
-    
-    users[username] = { password: password };
-    saveUsers(users);
-    
-    alert('Account created successfully! Please sign in.');
-    return true;
-}
-
-// Sign in user
-function signin(username, password) {
-    const users = loadUsers();
-    
-    if (!users[username]) {
-        alert('Username not found');
-        return false;
-    }
-    
-    if (users[username].password !== password) {
-        alert('Incorrect password');
-        return false;
-    }
-    
-    currentUser = username;
-    localStorage.setItem('currentUser', currentUser);
-    loadUserFavorites();
-    
-    return true;
-}
-
-// Logout user
-function logout() {
-    currentUser = null;
-    localStorage.removeItem('currentUser');
-    favorites = [];
-    
-    // Hide main app, show auth modal
-    document.getElementById('mainApp').style.display = 'none';
-    document.getElementById('authModal').style.display = 'flex';
-}
-
-// Check if user is already logged in
-function checkLoggedIn() {
-    const savedUser = localStorage.getItem('currentUser');
-    if (savedUser) {
-        currentUser = savedUser;
-        loadUserFavorites();
-        document.getElementById('authModal').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
-        document.getElementById('usernameDisplay').textContent = currentUser;
-        return true;
-    }
-    return false;
-}
-
-// ============================================
-// RECIPE FINDER FUNCTIONS
-// ============================================
 
 // DOM Elements
 const searchInput = document.getElementById('searchInput');
@@ -131,6 +10,22 @@ const modal = document.getElementById('recipeModal');
 const modalBody = document.getElementById('modalBody');
 const closeModal = document.querySelector('.close');
 
+// Favorites array
+let favorites = [];
+
+// Load favorites from localStorage
+function loadFavorites() {
+    const stored = localStorage.getItem('recipeFavorites');
+    if (stored) {
+        favorites = JSON.parse(stored);
+    }
+}
+
+// Save favorites to localStorage
+function saveFavorites() {
+    localStorage.setItem('recipeFavorites', JSON.stringify(favorites));
+}
+
 // Check if recipe is favorite
 function isFavorite(recipeId) {
     return favorites.includes(recipeId);
@@ -140,14 +35,14 @@ function isFavorite(recipeId) {
 function addToFavorites(recipeId) {
     if (!favorites.includes(recipeId)) {
         favorites.push(recipeId);
-        saveUserFavorites();
+        saveFavorites();
     }
 }
 
 // Remove from favorites
 function removeFromFavorites(recipeId) {
     favorites = favorites.filter(id => id !== recipeId);
-    saveUserFavorites();
+    saveFavorites();
 }
 
 // Toggle favorite
@@ -174,9 +69,11 @@ async function searchRecipes(searchTerm) {
     resultsDiv.innerHTML = '<div class="loading"><i class="fas fa-spinner fa-spin"></i> Searching for recipes...</div>';
     
     try {
+        // Search by meal name
         let response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${searchTerm}`);
         let data = await response.json();
         
+        // If no results, try searching by ingredient
         if (!data.meals) {
             response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${searchTerm}`);
             data = await response.json();
@@ -215,6 +112,7 @@ function displayResults(meals) {
             </div>
         `;
         
+        // Add event listeners
         const favoriteBtn = card.querySelector('.favorite-btn');
         favoriteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
@@ -241,6 +139,7 @@ async function showRecipeDetails(mealId) {
         const data = await response.json();
         const meal = data.meals[0];
         
+        // Extract ingredients and measurements
         const ingredients = [];
         for (let i = 1; i <= 20; i++) {
             const ingredient = meal[`strIngredient${i}`];
@@ -278,6 +177,7 @@ async function showRecipeDetails(mealId) {
             </div>
         `;
         
+        // Add favorite button listener in modal
         const modalFavoriteBtn = modalBody.querySelector('.favorite-modal-btn');
         if (modalFavoriteBtn) {
             modalFavoriteBtn.addEventListener('click', () => {
@@ -285,6 +185,7 @@ async function showRecipeDetails(mealId) {
                 modalFavoriteBtn.style.background = isFavorite(meal.idMeal) ? '#e74c3c' : '#667eea';
                 modalFavoriteBtn.innerHTML = `<i class="fas fa-heart"></i> ${isFavorite(meal.idMeal) ? ' Remove from Favorites' : ' Add to Favorites'}`;
                 
+                // Refresh the card view
                 const currentSearch = searchInput.value;
                 if (currentSearch) {
                     searchRecipes(currentSearch);
@@ -323,60 +224,7 @@ async function showFavorites() {
     displayResults(favoriteRecipes);
 }
 
-// ============================================
-// AUTH EVENT LISTENERS
-// ============================================
-
-document.getElementById('loginBtn').addEventListener('click', () => {
-    const username = document.getElementById('loginUsername').value.trim();
-    const password = document.getElementById('loginPassword').value;
-    
-    if (signin(username, password)) {
-        document.getElementById('authModal').style.display = 'none';
-        document.getElementById('mainApp').style.display = 'block';
-        document.getElementById('usernameDisplay').textContent = currentUser;
-        searchInput.value = '';
-        resultsDiv.innerHTML = '<div class="empty-state"><i class="fas fa-search"></i><p>Search for recipes above!</p></div>';
-    }
-});
-
-document.getElementById('signupBtn').addEventListener('click', () => {
-    const username = document.getElementById('signupUsername').value.trim();
-    const password = document.getElementById('signupPassword').value;
-    const confirm = document.getElementById('signupConfirm').value;
-    
-    if (signup(username, password, confirm)) {
-        document.getElementById('loginUsername').value = username;
-        document.getElementById('loginPassword').value = '';
-        document.getElementById('signupUsername').value = '';
-        document.getElementById('signupPassword').value = '';
-        document.getElementById('signupConfirm').value = '';
-        
-        document.getElementById('signupForm').classList.remove('active');
-        document.getElementById('loginForm').classList.add('active');
-    }
-});
-
-document.getElementById('showSignup').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('loginForm').classList.remove('active');
-    document.getElementById('signupForm').classList.add('active');
-});
-
-document.getElementById('showLogin').addEventListener('click', (e) => {
-    e.preventDefault();
-    document.getElementById('signupForm').classList.remove('active');
-    document.getElementById('loginForm').classList.add('active');
-});
-
-document.getElementById('logoutBtn').addEventListener('click', () => {
-    logout();
-});
-
-// ============================================
-// RECIPE FINDER EVENT LISTENERS
-// ============================================
-
+// Event Listeners
 searchBtn.addEventListener('click', () => {
     searchRecipes(searchInput.value);
 });
@@ -389,6 +237,7 @@ searchInput.addEventListener('keypress', (e) => {
 
 showFavoritesBtn.addEventListener('click', showFavorites);
 
+// Popular search buttons
 document.querySelectorAll('.tip-btn').forEach(btn => {
     btn.addEventListener('click', () => {
         const searchTerm = btn.dataset.search;
@@ -397,6 +246,7 @@ document.querySelectorAll('.tip-btn').forEach(btn => {
     });
 });
 
+// Modal close
 closeModal.addEventListener('click', () => {
     modal.style.display = 'none';
 });
@@ -407,6 +257,7 @@ window.addEventListener('click', (e) => {
     }
 });
 
+// Footer link event listeners
 const footerSearch = document.getElementById('footerSearch');
 const footerFavorites = document.getElementById('footerFavorites');
 
@@ -426,6 +277,7 @@ if (footerFavorites) {
     });
 }
 
+// Auto-update last updated date
 function updateLastUpdated() {
     const lastUpdatedElement = document.querySelector('.last-updated');
     if (lastUpdatedElement) {
@@ -437,7 +289,5 @@ function updateLastUpdated() {
 }
 
 // Initialize
-if (!checkLoggedIn()) {
-    document.getElementById('authModal').style.display = 'flex';
-}
+loadFavorites();
 updateLastUpdated();
