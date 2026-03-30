@@ -257,5 +257,37 @@ window.addEventListener('click', (e) => {
     }
 });
 
+// Footer link event listeners
+const footerSearch = document.getElementById('footerSearch');
+const footerFavorites = document.getElementById('footerFavorites');
+
+if (footerSearch) {
+    footerSearch.addEventListener('click', (e) => {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        searchInput.focus();
+    });
+}
+
+if (footerFavorites) {
+    footerFavorites.addEventListener('click', (e) => {
+        e.preventDefault();
+        showFavorites();
+        window.scrollTo({ top: 300, behavior: 'smooth' });
+    });
+}
+
+// Auto-update last updated date
+function updateLastUpdated() {
+    const lastUpdatedElement = document.querySelector('.last-updated');
+    if (lastUpdatedElement) {
+        const today = new Date();
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = today.toLocaleDateString('en-US', options);
+        lastUpdatedElement.textContent = `Last updated: ${formattedDate}`;
+    }
+}
+
 // Initialize
 loadFavorites();
+updateLastUpdated();
