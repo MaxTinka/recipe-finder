@@ -3,122 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Max's Recipe Finder | Discover Delicious Meals And Become Your Own Best Chef</title>
+    <title> Max's Recipe Finder | Discover That Recipe And Become Your Favorite Cheft</title>
     <link rel="stylesheet" href="style.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
-    <!-- Auth Modal (Login/Signup) -->
-    <div id="authModal" class="modal auth-modal">
-        <div class="modal-content auth-content">
-            <div class="auth-container">
-                <h2><i class="fas fa-utensils"></i> Max's Recipe Finder</h2>
-                <p class="auth-tagline">Discover delicious meals And Become Your Own Best Chef</p>
-                
-                <!-- Login Form -->
-                <div id="loginForm" class="auth-form active">
-                    <h3>Sign In</h3>
-                    <input type="text" id="loginUsername" placeholder="Username" class="auth-input">
-                    <input type="password" id="loginPassword" placeholder="Password" class="auth-input">
-                    <button id="loginBtn" class="auth-btn"><i class="fas fa-sign-in-alt"></i> Sign In</button>
-                    <p class="auth-switch">Don't have an account? <a href="#" id="showSignup">Sign Up</a></p>
-                </div>
-                
-                <!-- Signup Form -->
-                <div id="signupForm" class="auth-form">
-                    <h3>Create Account</h3>
-                    <input type="text" id="signupUsername" placeholder="Username" class="auth-input">
-                    <input type="password" id="signupPassword" placeholder="Password" class="auth-input">
-                    <input type="password" id="signupConfirm" placeholder="Confirm Password" class="auth-input">
-                    <button id="signupBtn" class="auth-btn"><i class="fas fa-user-plus"></i> Sign Up</button>
-                    <p class="auth-switch">Already have an account? <a href="#" id="showLogin">Sign In</a></p>
-                </div>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-utensils"></i> Max's Recipe Finder</h1>
+            <p>Search for delicious recipes by name or ingredient</p>
+        </header>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by meal name or ingredient... e.g., chicken, pasta, cake">
+                <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="search-tips">
+                <span>Popular searches:</span>
+                <button class="tip-btn" data-search="chicken">🍗 Chicken</button>
+                <button class="tip-btn" data-search="pasta">🍝 Pasta</button>
+                <button class="tip-btn" data-search="cake">🍰 Cake</button>
+                <button class="tip-btn" data-search="vegetarian">🥗 Vegetarian</button>
             </div>
         </div>
-    </div>
 
-    <!-- Main App (hidden until logged in) -->
-    <div id="mainApp" class="main-app" style="display: none;">
-        <div class="container">
-            <header>
-                <div class="header-top">
-                    <h1><i class="fas fa-utensils"></i> Max's Recipe Finder</h1>
-                    <div class="user-info">
-                        <span id="welcomeUser"><i class="fas fa-user-circle"></i> Welcome, <span id="usernameDisplay"></span></span>
-                        <button id="logoutBtn" class="logout-btn"><i class="fas fa-sign-out-alt"></i> Logout</button>
-                    </div>
-                </div>
-                <p>Search for delicious recipes by name or ingredient</p>
-            </header>
-
-            <!-- Search Section -->
-            <div class="search-section">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Search by meal name or ingredient... e.g., chicken, pasta, cake">
-                    <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
-                </div>
-                <div class="search-tips">
-                    <span>Popular searches:</span>
-                    <button class="tip-btn" data-search="chicken">🍗 Chicken</button>
-                    <button class="tip-btn" data-search="pasta">🍝 Pasta</button>
-                    <button class="tip-btn" data-search="cake">🍰 Cake</button>
-                    <button class="tip-btn" data-search="vegetarian">🥗 Vegetarian</button>
-                </div>
-            </div>
-
-            <!-- Favorites Section -->
-            <div class="favorites-section">
-                <button id="showFavoritesBtn" class="btn-favorites"><i class="fas fa-heart"></i> My Favorites</button>
-            </div>
-
-            <!-- Results Section -->
-            <div id="results" class="results-grid">
-                <!-- Recipe cards will appear here -->
-            </div>
-
-            <!-- Recipe Modal (popup) -->
-            <div id="recipeModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <div id="modalBody"></div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <footer class="footer">
-                <div class="footer-content">
-                    <div class="footer-section">
-                        <h3><i class="fas fa-utensils"></i> Max's Recipe Finder</h3>
-                        <p>Discover delicious meals from around the world. Search by name or ingredient and save your favorites!</p>
-                    </div>
-                    <div class="footer-section">
-                        <h3>Quick Links</h3>
-                        <ul>
-                            <li><a href="#" id="footerSearch"><i class="fas fa-search"></i> Search Recipes</a></li>
-                            <li><a href="#" id="footerFavorites"><i class="fas fa-heart"></i> My Favorites</a></li>
-                        </ul>
-                    </div>
-                    <div class="footer-section">
-                        <h3>API Credit</h3>
-                        <p>Powered by <a href="https://www.themealdb.com/" target="_blank">TheMealDB</a></p>
-                        <p>Free recipe API with thousands of meals</p>
-                    </div>
-                    <div class="footer-section">
-                        <h3>Connect</h3>
-                        <div class="social-links">
-                            <a href="https://github.com/MaxTinka" target="_blank"><i class="fab fa-github"></i></a>
-                            <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
-                            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
-                        </div>
-                    </div>
-                </div>
-                <div class="footer-bottom">
-                    <p>© 2026 Max's Recipe Finder. All rights reserved by Max Tinka.</p>
-                    <p class="last-updated">Last updated: March 31, 2026</p>
-                </div>
-            </footer>
+        <!-- Favorites Section -->
+        <div class="favorites-section">
+            <button id="showFavoritesBtn" class="btn-favorites"><i class="fas fa-heart"></i> My Favorites</button>
         </div>
+
+        <!-- Results Section -->
+        <div id="results" class="results-grid">
+            <!-- Recipe cards will appear here -->
+        </div>
+
+        <!-- Recipe Modal (popup) -->
+        <div id="recipeModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3><i class="fas fa-utensils"></i> Max's Recipe Finder</h3>
+                    <p>Discover delicious meals from around the world. Search by name or ingredient and save your favorites!</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="#" id="footerSearch"><i class="fas fa-search"></i> Search Recipes</a></li>
+                        <li><a href="#" id="footerFavorites"><i class="fas fa-heart"></i> My Favorites</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h3>API Credit</h3>
+                    <p>Powered by <a href="https://www.themealdb.com/" target="_blank">TheMealDB</a></p>
+                    <p>Free recipe API with thousands of meals</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Connect</h3>
+                    <div class="social-links">
+                        <a href="https://github.com/MaxTinka" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-linkedin"></i></a>
+                        <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>© 2026 Max's Recipe Finder All rights reserved by Max Tinka.</p>
+                <p class="last-updated">Last updated: March 31, 2026</p>
+            </div>
+        </footer>
     </div>
 
     <script src="script.js"></script>
