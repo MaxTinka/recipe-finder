@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recipe Finder | Discover Delicious Meals</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-utensils"></i> Recipe Finder</h1>
+            <p>Search for delicious recipes by name or ingredient</p>
+        </header>
+
+        <!-- Search Section -->
+        <div class="search-section">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Search by meal name or ingredient... e.g., chicken, pasta, cake">
+                <button id="searchBtn"><i class="fas fa-search"></i> Search</button>
+            </div>
+            <div class="search-tips">
+                <span>Popular searches:</span>
+                <button class="tip-btn" data-search="chicken">🍗 Chicken</button>
+                <button class="tip-btn" data-search="pasta">🍝 Pasta</button>
+                <button class="tip-btn" data-search="cake">🍰 Cake</button>
+                <button class="tip-btn" data-search="vegetarian">🥗 Vegetarian</button>
+            </div>
+        </div>
+
+        <!-- Favorites Section -->
+        <div class="favorites-section">
+            <button id="showFavoritesBtn" class="btn-favorites"><i class="fas fa-heart"></i> My Favorites</button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="results" class="results-grid">
+            <!-- Recipe cards will appear here -->
+        </div>
+
+        <!-- Recipe Modal (popup) -->
+        <div id="recipeModal" class="modal">
+            <div class="modal-content">
+                <span class="close">&times;</span>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
